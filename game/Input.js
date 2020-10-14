@@ -1,12 +1,12 @@
-import { Controller } from './Controller.js';
-import { Vector } from './Vector.js';
+import { Player } from './Player.js'
+import { Vector } from './Vector.js'
 
 export class Input {
   /**
-   * @param {Controller} controller
+   * @param {Player} player
    */
-  constructor(controller) {
-    this.controller = controller
+  constructor(player) {
+    this.player = player
   }
 
   /**
@@ -15,8 +15,8 @@ export class Input {
    */
   createMouseMoveListener(canvas) {
     return (event) => {
-      const follow = new Vector(event.offsetX - canvas.width / 2, event.offsetY - canvas.height / 2)
-      this.controller.addCommand(follow)
+      const position = new Vector(event.offsetX - canvas.width / 2, event.offsetY - canvas.height / 2)
+      this.player.target(position)
     }
   }
 }

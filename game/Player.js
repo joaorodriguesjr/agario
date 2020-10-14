@@ -1,4 +1,5 @@
 import { Blob } from './Blob.js'
+import { Vector } from './Vector.js'
 import { Controller } from './Controller.js'
 
 export class Player {
@@ -12,12 +13,22 @@ export class Player {
     this.enemies = new Set()
   }
 
-  update() {
-    if (! this.controller.hasCommand() && ! this.controller.hasCache()) {
+  /**
+   * @returns {void}
+   */
+  executeMovement() {
+    if (! this.controller.isMoving()) {
       return
     }
 
-    this.blob.move(this.controller.nextCommand())
+    this.blob.move(this.controller.nextMovement())
+  }
+
+  /**
+   * @param {Vector} position
+   */
+  target(position) {
+    this.controller.addMovement(position)
   }
 
   /**

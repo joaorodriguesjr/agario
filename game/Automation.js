@@ -1,6 +1,10 @@
-import { Blob } from './Blob.js';
-import { World } from './World.js';
-import { Player } from './Player.js';
+import { World } from './World.js'
+import { Blob } from './Blob.js'
+import { Player } from './Player.js'
+
+export const FEEDING_MODE = 'Feeding'
+export const HUNTING_MODE = 'Hunting'
+export const RUNNING_MODE = 'Running'
 
 export class Automation {
   /**
@@ -8,6 +12,7 @@ export class Automation {
    */
   constructor(world) {
     this.world = world
+    this.mode = FEEDING_MODE
 
     /**
      * @type {Player}
@@ -25,7 +30,7 @@ export class Automation {
    */
   operate(subject) {
     if (this.staticTarget !== undefined) {
-      subject.controller.addCommand(this.staticTarget.calculatePath(subject.blob))
+      subject.controller.addMovement(this.staticTarget.calculatePath(subject.blob))
     }
   }
 

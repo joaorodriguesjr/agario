@@ -5,7 +5,7 @@ export class Controller {
     /**
      * @type {Array<Vector>}
      */
-    this.commands = new Array()
+    this.movements = new Array()
 
     /**
      * @type {Vector}
@@ -14,17 +14,17 @@ export class Controller {
   }
 
   /**
-   * @param {Vector} command
+   * @param {Vector} movement
    */
-  addCommand(command) {
-    this.commands.push(command)
+  addMovement(movement) {
+    this.movements.push(movement)
   }
 
   /**
    * @returns {Boolean}
    */
-  hasCommand() {
-    return this.commands.length > 0
+  hasMovement() {
+    return this.movements.length > 0
   }
 
   /**
@@ -35,11 +35,18 @@ export class Controller {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  isMoving() {
+    return (this.hasMovement() || this.hasCache())
+  }
+
+  /**
    * @returns {Vector}
    */
-  nextCommand() {
-    if (this.hasCommand()) {
-      this.cache = this.commands.shift()
+  nextMovement() {
+    if (this.hasMovement()) {
+      this.cache = this.movements.shift()
     }
 
     return this.cache

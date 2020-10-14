@@ -1,17 +1,16 @@
 import { Vector } from './Vector.js'
 import { Blob } from './Blob.js'
 import { Player } from './Player.js'
+import { Spawner } from './Spawner.js'
 
 export class World {
-
   /**
-   * @param {Vector} dimensions
+   * @param {Object} config
+   * @param {Spawner} spawner
    */
-  constructor(dimensions) {
-    /**
-     * @type {Vector}
-     */
-    this.dimensions = dimensions
+  constructor(config, spawner) {
+    this.spawner = spawner
+    this.dimensions = new Vector(config.world.width, config.world.height)
 
     /**
      * @type {Set<Blob>}
@@ -24,36 +23,43 @@ export class World {
     this.players = new Set()
   }
 
-  /**
-   * @param {Blob} foodBlob
-   */
-  supply(foodBlob) {
-    this.blobs.add(foodBlob)
+  get playersCount() {
+    return this.players.size
   }
 
   /**
    * @param {Player} player
    */
-  register(player) {
+  registerPlayer(player) {
     this.players.forEach(rival => rival.track(player))
     this.players.forEach(rival => player.track(rival))
     this.players.add(player)
   }
 
   /**
+   * @param {Blob} blob
+   */
+  registerBlob(blob) {
+    this.blobs.add(blob)
+  }
+
+  /**
    * @returns {void}
    */
   update() {
-    this.players.forEach(player => this.updatePlayer(player))
+    this.spawner.spawnEntities(this)
+    this.players.forEach(player => this.executePlayerMechanics(player))
   }
 
   /**
    * @param {Player} player
    */
-  updatePlayer(player) {
-    player.update()
-    const onBlobEaten = (blob) => this.blobs.delete(blob)
+  executePlayerMechanics(player) {
+    player.executeMovement()
+
+    const onBlobEaten = (blob) => this.removeBlob(blob)
     this.blobs.forEach(blob => player.eatBlob(blob, onBlobEaten))
+
     const onEnemyBeaten = (enemy) => this.removePlayer(enemy)
     player.fightEnemies(onEnemyBeaten)
   }
@@ -64,5 +70,12 @@ export class World {
   removePlayer(player) {
     this.players.delete(player)
     this.players.forEach(rival => rival.untrack(player))
+  }
+
+  /**
+   * @param {Blob} blob
+   */
+  removeBlob(blob) {
+    this.blobs.delete(blob)
   }
 }
