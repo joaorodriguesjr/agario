@@ -29,8 +29,45 @@ export class Automation {
    * @param {Player} subject
    */
   operate(subject) {
-    if (this.staticTarget !== undefined) {
-      subject.controller.addMovement(this.staticTarget.calculatePath(subject.blob))
+    switch (this.mode) {
+      case FEEDING_MODE:
+        this.executeFeedRoutine(subject)
+        break
+      case HUNTING_MODE:
+        this.executeHuntRoutine(subject)
+        break
+      case RUNNING_MODE:
+        this.executeRunningRoutine(subject)
+        break
+    }
+  }
+
+  /**
+   * @param {Player} subject
+   */
+  executeFeedRoutine(subject) {
+    if (this.staticTarget === undefined) {
+      return
+    }
+
+    subject.controller.addMovement(this.staticTarget.calculatePath(subject.blob))
+  }
+
+  /**
+   * @param {Player} subject
+   */
+  executeHuntRoutine(subject) {
+    if (this.movingTarget === undefined) {
+      return
+    }
+  }
+
+  /**
+   * @param {Player} subject
+   */
+  executeRunningRoutine(subject) {
+    if (this.movingTarget === undefined) {
+      return
     }
   }
 
