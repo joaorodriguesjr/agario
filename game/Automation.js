@@ -98,7 +98,7 @@ export class Automation {
    * @param {Bot} subject
    */
   validateRunningBehaviour(subject) {
-    if (! subject.isFarEnoughTo(this.movingTarget)) {
+    if (! subject.isFarEnoughToRunFrom(this.movingTarget)) {
       return
     }
 

@@ -55,7 +55,7 @@ export class Bot extends Player {
    * @returns {Boolean}
    */
   isCloseEnoughToHunt(enemy) {
-    return (this.blob.calculateDistanceTo(enemy.blob) < (this.blob.radius + enemy.blob.radius) * 1.5)
+    return (this.blob.calculateDistanceTo(enemy.blob) < (this.blob.radius + enemy.blob.radius) * 2.00)
   }
 
   /**
@@ -63,15 +63,15 @@ export class Bot extends Player {
    * @returns {Boolean}
    */
   isCloseEnoughToRunFrom(enemy) {
-    return (this.blob.calculateDistanceTo(enemy.blob) < enemy.blob.radius * 3.5)
+    return (this.blob.calculateDistanceTo(enemy.blob) < (this.blob.radius + enemy.blob.radius) * 1.85)
   }
 
   /**
    * @param {Player} enemy
    * @returns {Boolean}
    */
-  isFarEnoughTo(enemy) {
-    return (this.blob.calculateDistanceTo(enemy.blob) > this.blob.radius * 3.5)
+  isFarEnoughToRunFrom(enemy) {
+    return (this.blob.calculateDistanceTo(enemy.blob) > (this.blob.radius + enemy.blob.radius) * 2.50)
   }
 
   /**
@@ -91,7 +91,7 @@ export class Bot extends Player {
   }
 
   isDangerClose(blob, player) {
-    return this.blob.calculateDistanceTo(player.blob) < this.blob.calculateDistanceTo(blob)
+    return this.blob.calculateDistanceTo(player.blob) < this.blob.calculateDistanceTo(blob) * 1.25
       && player.isBiggerThan(this)
   }
 }
