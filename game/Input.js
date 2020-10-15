@@ -15,8 +15,8 @@ export class Input {
    */
   createMouseMoveListener(canvas) {
     return (event) => {
-      const position = new Vector(event.offsetX - canvas.width / 2, event.offsetY - canvas.height / 2)
-      this.player.target(position)
+      const direction = new Vector(event.offsetX - canvas.width / 2, event.offsetY - canvas.height / 2)
+      this.player.targetDirection(direction)
     }
   }
 }

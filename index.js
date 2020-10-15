@@ -4,17 +4,16 @@ import { World } from './game/World.js'
 import { Spawner } from './game/Spawner.js'
 import { Input } from './game/Input.js'
 
+window.config = {
+  world: { width: 1900, height: 950 },
+  spawn: {
+    players: 5, blobs: 100,
+    player: { radius: 15 }, bot: { radius: 10 },
+    blob: { radius: { min: 0.5, max: 5.5 } }
+  },
+}
+
 window.onload = () => {
-
-  const config = {
-    world: { width: 1900, height: 950 },
-    spawn: {
-      players: 5, blobs: 100,
-      player: { radius: 15 }, bot: { radius: 10 },
-      blob: { radius: { min: 0.5, max: 5.5 } }
-    },
-  }
-
   const canvas = document.querySelector('canvas')
   canvas.width = document.body.clientWidth
   canvas.height = document.body.clientHeight

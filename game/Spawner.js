@@ -19,7 +19,7 @@ export class Spawner {
    */
   spawnEntities(world) {
     while (world.playersCount < this.config.players) this.spawnBot(world)
-    while (world.blobs.size < this.config.blobs) this.spawnBlob(world)
+    while (world.blobsCount < this.config.blobs) this.spawnBlob(world)
   }
 
   /**

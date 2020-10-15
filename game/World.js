@@ -25,18 +25,25 @@ export class World {
   }
 
   /**
-   * @returns {void}
+   * @returns {Number}
    */
-  update() {
-    this.spawner.spawnEntities(this)
-    this.players.forEach(player => this.executePlayerMechanics(player))
+  get playersCount() {
+    return this.players.size
   }
 
   /**
    * @returns {Number}
    */
-  get playersCount() {
-    return this.players.size
+  get blobsCount() {
+    return this.blobs.size
+  }
+
+  /**
+   * @returns {void}
+   */
+  update() {
+    this.spawner.spawnEntities(this)
+    this.players.forEach(player => this.executePlayerMechanics(player))
   }
 
   /**

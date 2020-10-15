@@ -40,6 +40,13 @@ export class Player {
   }
 
   /**
+   * @param {Vector} position
+   */
+  targetDirection(position) {
+    this.controller.addMovement(position)
+  }
+
+  /**
    * @returns {void}
    */
   executeMovement() {
@@ -48,13 +55,6 @@ export class Player {
     }
 
     this.blob.move(this.controller.nextMovement())
-  }
-
-  /**
-   * @param {Vector} position
-   */
-  target(position) {
-    this.controller.addMovement(position)
   }
 
   /**
