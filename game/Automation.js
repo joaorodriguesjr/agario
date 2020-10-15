@@ -83,13 +83,11 @@ export class Automation {
    * @param {Bot} subject
    */
   validateFeedingBehaviour(subject) {
-    if (this.staticTarget === undefined || this.movingTarget === undefined) {
+    if (! subject.isDangerClose(this.staticTarget, this.movingTarget)) {
       return
     }
 
-    if (subject.isDangerClose(this.staticTarget, this.movingTarget)) {
-      this.behaviour = 'Running'
-    }
+    this.behaviour = 'Running'
   }
 
   /**
