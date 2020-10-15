@@ -15,10 +15,72 @@ export class Bot extends Player {
   }
 
   /**
+   * @param {Blob} target
+   */
+  advanceTo(target) {
+    this.controller.addMovement(this.blob.calculatePathTo(target))
+  }
+
+  /**
+   * @param {Blob} target
+   */
+  retreatFrom(target) {
+    this.controller.addMovement(this.blob.calculatePathFrom(target))
+  }
+
+  /**
    * @returns {void}
    */
   executeMovement() {
     this.automation.operate(this)
     super.executeMovement()
+  }
+
+  /**
+   * @param {Player} enemy
+   * @returns {Boolean}
+   */
+  isCloseEnoughTo(enemy) {
+    return (this.blob.calculateDistanceTo(enemy.blob) < enemy.blob.radius / 2)
+  }
+
+  /**
+   * @param {Player} enemy
+   * @returns {Boolean}
+   */
+  isCloseEnoughToHunt(enemy) {
+    return (this.blob.calculateDistanceTo(enemy.blob) < enemy.blob.radius * 0.5)
+  }
+
+  /**
+   * @param {Player} enemy
+   * @returns {Boolean}
+   */
+  isCloseEnoughToRunFrom(enemy) {
+    return (this.blob.calculateDistanceTo(enemy.blob) < enemy.blob.radius * 3.5)
+  }
+
+  /**
+   * @param {Player} enemy
+   * @returns {Boolean}
+   */
+  isFarEnoughTo(enemy) {
+    return (this.blob.calculateDistanceTo(enemy.blob) > this.blob.radius * 3.5)
+  }
+
+  /**
+   * @param {Player} player
+   * @returns {Boolean}
+   */
+  shouldHunt(player) {
+    return this.isCloseEnoughToHunt(player) && this.isBiggerThan(player)
+  }
+
+  /**
+   * @param {Player} player
+   * @returns {Boolean}
+   */
+  shouldRunFrom(player) {
+    return this.isCloseEnoughToRunFrom(player) && player.isBiggerThan(this)
   }
 }

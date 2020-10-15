@@ -14,6 +14,20 @@ export class Player {
   }
 
   /**
+   * @param {Player} enemy
+   */
+  track(enemy) {
+    this.enemies.add(enemy)
+  }
+
+  /**
+   * @param {Player} enemy
+   */
+  untrack(enemy) {
+    this.enemies.delete(enemy)
+  }
+
+  /**
    * @returns {void}
    */
   executeMovement() {
@@ -29,20 +43,6 @@ export class Player {
    */
   target(position) {
     this.controller.addMovement(position)
-  }
-
-  /**
-   * @param {Player} enemy
-   */
-  track(enemy) {
-    this.enemies.add(enemy)
-  }
-
-  /**
-   * @param {Player} enemy
-   */
-  untrack(enemy) {
-    this.enemies.delete(enemy)
   }
 
   /**
@@ -87,7 +87,7 @@ export class Player {
    * @returns {Boolean}
    */
   reached(blob) {
-    const distance = this.blob.position.minus(blob.position).calculateLength()
+    const distance = this.blob.calculatePathTo(blob).calculateLength()
     return (distance < (this.blob.radius - blob.radius / 2))
   }
 
@@ -97,23 +97,5 @@ export class Player {
    */
   isBiggerThan(enemy) {
     return this.blob.radius > enemy.blob.radius
-  }
-
-  /**
-   * @param {Player} enemy
-   * @returns {Boolean}
-   */
-  isCloseEnoughTo(enemy) {
-    const distance = enemy.blob.calculateDistance(this.blob) - (this.blob.radius + enemy.blob.radius)
-    return (distance < enemy.blob.radius / 2)
-  }
-
-  /**
-   * @param {Player} enemy
-   * @returns {Boolean}
-   */
-  isFarEnoughTo(enemy) {
-    const distance = enemy.blob.calculateDistance(this.blob) - (this.blob.radius + enemy.blob.radius)
-    return (distance > (this.blob.radius + enemy.blob.radius) * 2)
   }
 }

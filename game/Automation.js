@@ -1,6 +1,7 @@
 import { World } from './World.js'
 import { Blob } from './Blob.js'
 import { Player } from './Player.js'
+import { Bot } from './Bot.js'
 
 export class Automation {
   /**
@@ -19,73 +20,77 @@ export class Automation {
      */
     this.staticTarget
 
-    this.mode = 'Feeding'
+    this.behaviour = 'Feeding'
+    this.hunting = 0
   }
 
   /**
-   * @param {Player} subject
+   * @param {Bot} subject
    */
   operate(subject) {
     this.updateTargets(subject)
 
-    if (this.mode === 'Feeding') subject.controller.addMovement(this.staticTarget.calculatePathTo(subject.blob))
-    if (this.mode === 'Hunting') subject.controller.addMovement(this.movingTarget.blob.calculatePathTo(subject.blob))
-    if (this.mode === 'Running') subject.controller.addMovement(subject.blob.calculatePathFrom(this.movingTarget.blob))
+    if (this.behaviour === 'Feeding') subject.advanceTo(this.staticTarget)
+    if (this.behaviour === 'Running') subject.retreatFrom(this.movingTarget.blob)
+    if (this.behaviour === 'Hunting') subject.advanceTo(this.movingTarget.blob)
   }
 
   /**
-   * @param {Player} subject
+   * @param {Bot} subject
    */
   updateTargets(subject) {
-    if (this.mode === 'Hunting') this.validateHuntingState(subject)
-    if (this.mode === 'Running') this.validateRunningState(subject)
-    if (this.mode === 'Feeding') this.validateFeedingState(subject)
+    if (this.behaviour === 'Running') this.validateRunningBehaviour(subject)
+    if (this.behaviour === 'Hunting') this.validateHuntingBehaviour(subject)
+    if (this.behaviour === 'Feeding') this.validateFeedingBehaviour(subject)
 
     this.world.players.forEach(rival => this.updateMovingTarget(subject, rival))
     this.world.blobs.forEach(blob => this.updateStaticTarget(blob, subject))
   }
 
   /**
-   * @param {Player} subject
+   * @param {Bot} subject
    */
-  validateHuntingState(subject) {
+  validateHuntingBehaviour(subject) {
     if (this.stillHunting(subject)) {
+      this.hunting++
       return
     }
 
-    this.mode = 'Feeding'
+    this.hunting = 0
+    this.behaviour = 'Feeding'
     delete this.movingTarget
   }
 
   /**
-   * @param {Player} subject
+   * @param {Bot} subject
    * @return {Boolean}
    */
   stillHunting(subject) {
     let hunting = true
 
-    if (subject.isCloseEnoughTo(this.movingTarget)) hunting = true
+    // if (subject.isCloseEnoughToHunt(this.movingTarget)) hunting = true
     if (subject.reached(this.movingTarget.blob)) hunting = false
+    if (this.hunting > 60) hunting = false
 
     return hunting
   }
 
   /**
-   * @param {Player} subject
+   * @param {Bot} subject
    */
-  validateRunningState(subject) {
+  validateRunningBehaviour(subject) {
     if (! subject.isFarEnoughTo(this.movingTarget)) {
       return
     }
 
-    this.mode = 'Feeding'
+    this.behaviour = 'Feeding'
     delete this.movingTarget
   }
 
   /**
-   * @param {Player} subject
+   * @param {Bot} subject
    */
-  validateFeedingState(subject) {
+  validateFeedingBehaviour(subject) {
     if (this.staticTarget === undefined) {
       return
     }
@@ -98,7 +103,7 @@ export class Automation {
   }
 
   /**
-   * @param {Player} subject
+   * @param {Bot} subject
    * @param {Player} rival
    */
   updateMovingTarget(subject, rival) {
@@ -106,21 +111,27 @@ export class Automation {
       return
     }
 
-    if (! subject.isCloseEnoughTo(rival)) {
+    if (! subject.isCloseEnoughToHunt(rival) || ! subject.isCloseEnoughToRunFrom(rival)) {
       return
     }
 
-    delete this.staticTarget
+    if (subject.shouldRunFrom(rival)) {
+      this.behaviour = 'Running'
+    }
+
+    if (subject.shouldHunt(rival)) {
+      this.behaviour = 'Hunting'
+    }
+
     this.movingTarget = rival
-    this.mode = subject.isBiggerThan(rival) ? 'Hunting' : 'Running'
   }
 
   /**
    * @param {Blob} blob
-   * @param {Player} subject
+   * @param {Bot} subject
    */
   updateStaticTarget(blob, subject) {
-    if (this.mode === 'Hunting' || this.mode === 'Running') {
+    if (this.behaviour === 'Hunting' || this.behaviour === 'Running') {
       return
     }
 
@@ -128,7 +139,7 @@ export class Automation {
       this.staticTarget = blob
     }
 
-    if (blob.calculateDistance(subject.blob) < this.staticTarget.calculateDistance(subject.blob)) {
+    if (blob.calculateDistanceTo(subject.blob) < this.staticTarget.calculateDistanceTo(subject.blob)) {
       this.staticTarget = blob
     }
   }

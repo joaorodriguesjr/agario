@@ -22,13 +22,13 @@ export class Blob {
 
     if (x < 0 || x > this.limits.x) {
       movement.x = 0
-      this.position.add(movement)
+      this.position.add(movement.dividedBy(2))
       return
     }
 
     if (y < 0 || y > this.limits.y) {
       movement.y = 0
-      this.position.add(movement)
+      this.position.add(movement.dividedBy(2))
       return
     }
 
@@ -39,16 +39,16 @@ export class Blob {
    * @param {Number} growth
    */
   grow(growth) {
-    this.radius += (growth)
-    this.speed  -= (growth / 250)
+    this.radius = this.radius + growth
+    this.speed  = this.speed  - growth / 100
   }
 
   /**
    * @param {Blob} blob
    * @returns {Number}
    */
-  calculateDistance(blob) {
-    return this.position.minus(blob.position).calculateLength()
+  calculateDistanceTo(blob) {
+    return this.calculatePathTo(blob).calculateLength() - (this.radius + blob.radius)
   }
 
   /**
@@ -56,7 +56,7 @@ export class Blob {
    * @returns {Vector}
    */
   calculatePathTo(blob) {
-    return this.position.minus(blob.position)
+    return blob.position.minus(this.position)
   }
 
   /**

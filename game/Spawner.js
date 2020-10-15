@@ -27,7 +27,9 @@ export class Spawner {
    * @returns {Player}
    */
   spawnPlayer(world) {
-    const blob = new Blob(this.calculateRandomPosition(world), this.config.player.radius, world.dimensions)
+    const position = new Vector(world.dimensions.x / 2, world.dimensions.y / 2)
+    // const position = this.calculateRandomPosition(world)
+    const blob = new Blob(position, this.config.player.radius, world.dimensions)
     const player = new Player(blob, new Controller())
     world.registerPlayer(player)
 
@@ -67,6 +69,6 @@ export class Spawner {
   calculateRandomRadius() {
     const min = this.config.blob.radius.min
     const max = this.config.blob.radius.max
-    return Math.floor(Math.random() * (max - min)) + min
+    return Math.random() * (max - min) + min
   }
 }

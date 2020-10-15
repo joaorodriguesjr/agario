@@ -30,6 +30,10 @@ export class Renderer {
   render(world, player) {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
     const offset = this.calculateOffset(player)
+    this.context.fillStyle = "#F9F9F9";
+    this.context.fillRect(offset.x, offset.y, world.dimensions.x, world.dimensions.y);
+    this.context.fillStyle = "#454545";
+
     world.blobs.forEach(blob => this.renderBlob(blob, offset))
     world.players.forEach(player => this.renderBlob(player.blob, offset))
   }
