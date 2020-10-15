@@ -32,24 +32,24 @@ export class Bot extends Player {
    * @returns {void}
    */
   executeMovement() {
-    this.automation.executeBehaviour(this)
+    this.automation.executeAutomatedBehaviour(this)
     super.executeMovement()
   }
 
   /**
    * @param {Player} player
    */
-  onPlayerDelete(player) {
-    super.onPlayerDelete(player)
-    this.automation.checkMovingTarget(this, player)
+  onPlayerRemove(player) {
+    super.onPlayerRemove(player)
+    this.automation.validateMovingTarget(this, player)
   }
 
   /**
    * @param {Blob} blob
    */
-  onBlobDelete(blob) {
-    super.onBlobDelete(blob)
-    this.automation.checkStaticTarget(this, blob)
+  onBlobRemove(blob) {
+    super.onBlobRemove(blob)
+    this.automation.validateStaticTarget(this, blob)
   }
 
   /**

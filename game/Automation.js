@@ -27,7 +27,7 @@ export class Automation {
    * @param {Bot} subject
    * @param {Player} rival
    */
-  checkMovingTarget(subject, rival) {
+  validateMovingTarget(subject, rival) {
     if (this.movingTarget !== rival) {
       return
     }
@@ -40,7 +40,7 @@ export class Automation {
    * @param {Bot} subject
    * @param {Blob} blob
    */
-  checkStaticTarget(subject, blob) {
+  validateStaticTarget(subject, blob) {
     if (this.staticTarget !== blob) {
       return
     }
@@ -52,7 +52,7 @@ export class Automation {
   /**
    * @param {Bot} subject
    */
-  executeBehaviour(subject) {
+  executeAutomatedBehaviour(subject) {
     this.updateTargets(subject)
 
     if (this.behaviour === 'Feeding') subject.advanceTo(this.staticTarget)

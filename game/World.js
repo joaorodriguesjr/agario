@@ -56,7 +56,7 @@ export class World {
     /** @type {Player} **/
     let nearest
 
-    const find = (player) => {
+    const finder = (player) => {
       if (player === subject) {
         return
       }
@@ -72,7 +72,7 @@ export class World {
       nearest = player
     }
 
-    this.players.forEach(find)
+    this.players.forEach(finder)
     return nearest
   }
 
@@ -91,7 +91,7 @@ export class World {
     /** @type {Blob} **/
     let nearest
 
-    const find = (blob) => {
+    const finder = (blob) => {
       if (nearest === undefined) {
         nearest = blob
       }
@@ -103,7 +103,7 @@ export class World {
       nearest = blob
     }
 
-    this.blobs.forEach(find)
+    this.blobs.forEach(finder)
     return nearest
   }
 
@@ -125,7 +125,7 @@ export class World {
    */
   removePlayer(player) {
     this.players.delete(player)
-    this.players.forEach(rival => rival.onPlayerDelete(player))
+    this.players.forEach(rival => rival.onPlayerRemove(player))
   }
 
   /**
@@ -133,6 +133,6 @@ export class World {
    */
   removeBlob(blob) {
     this.blobs.delete(blob)
-    this.players.forEach(player => player.onBlobDelete(blob))
+    this.players.forEach(player => player.onBlobRemove(blob))
   }
 }
