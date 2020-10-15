@@ -7,9 +7,9 @@ import { Input } from './game/Input.js'
 window.onload = () => {
 
   const config = {
-    world: { width: 5000, height: 5000 },
+    world: { width: 2500, height: 2500 },
     spawn: {
-      players: 50, blobs: 500,
+      players: 25, blobs: 75,
       player: { radius: 25 }, bot: { radius: 10 },
       blob: { radius: { min: 5, max: 10 } }
     },

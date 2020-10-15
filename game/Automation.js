@@ -2,17 +2,12 @@ import { World } from './World.js'
 import { Blob } from './Blob.js'
 import { Player } from './Player.js'
 
-export const FEEDING_MODE = 'Feeding'
-export const HUNTING_MODE = 'Hunting'
-export const RUNNING_MODE = 'Running'
-
 export class Automation {
   /**
    * @param {World} world
    */
   constructor(world) {
     this.world = world
-    this.mode = FEEDING_MODE
 
     /**
      * @type {Player}
@@ -23,78 +18,101 @@ export class Automation {
      * @type {Blob}
      */
     this.staticTarget
+
+    this.mode = 'Feeding'
   }
 
   /**
    * @param {Player} subject
    */
   operate(subject) {
-    switch (this.mode) {
-      case FEEDING_MODE:
-        this.executeFeedRoutine(subject)
-        break
-      case HUNTING_MODE:
-        this.executeHuntRoutine(subject)
-        break
-      case RUNNING_MODE:
-        this.executeRunningRoutine(subject)
-        break
-    }
-  }
+    this.updateTargets(subject)
 
-  /**
-   * @param {Player} subject
-   */
-  executeFeedRoutine(subject) {
-    if (this.staticTarget === undefined) {
-      return
-    }
-
-    subject.controller.addMovement(this.staticTarget.calculatePath(subject.blob))
-  }
-
-  /**
-   * @param {Player} subject
-   */
-  executeHuntRoutine(subject) {
-    if (this.movingTarget === undefined) {
-      return
-    }
-  }
-
-  /**
-   * @param {Player} subject
-   */
-  executeRunningRoutine(subject) {
-    if (this.movingTarget === undefined) {
-      return
-    }
+    if (this.mode === 'Feeding') subject.controller.addMovement(this.staticTarget.calculatePathTo(subject.blob))
+    if (this.mode === 'Hunting') subject.controller.addMovement(this.movingTarget.blob.calculatePathTo(subject.blob))
+    if (this.mode === 'Running') subject.controller.addMovement(subject.blob.calculatePathFrom(this.movingTarget.blob))
   }
 
   /**
    * @param {Player} subject
    */
   updateTargets(subject) {
-    if (this.movingTarget !== undefined) {
-      if (subject.reached(this.movingTarget.blob)) delete this.movingTarget
-    }
+    if (this.mode === 'Hunting') this.validateHuntingState(subject)
+    if (this.mode === 'Running') this.validateRunningState(subject)
+    if (this.mode === 'Feeding') this.validateFeedingState(subject)
 
-    if (this.staticTarget !== undefined) {
-      if (subject.reached(this.staticTarget)) delete this.staticTarget
-    }
-
-    this.world.players.forEach(player => this.updateMovingTarget(player, subject))
+    this.world.players.forEach(rival => this.updateMovingTarget(subject, rival))
     this.world.blobs.forEach(blob => this.updateStaticTarget(blob, subject))
   }
 
   /**
-   * @param {Player} player
    * @param {Player} subject
    */
-  updateMovingTarget(player, subject) {
-    if (player === subject) {
+  validateHuntingState(subject) {
+    if (this.stillHunting(subject)) {
       return
     }
+
+    this.mode = 'Feeding'
+    delete this.movingTarget
+  }
+
+  /**
+   * @param {Player} subject
+   * @return {Boolean}
+   */
+  stillHunting(subject) {
+    let hunting = true
+
+    if (subject.isCloseEnoughTo(this.movingTarget)) hunting = true
+    if (subject.reached(this.movingTarget.blob)) hunting = false
+
+    return hunting
+  }
+
+  /**
+   * @param {Player} subject
+   */
+  validateRunningState(subject) {
+    if (! subject.isFarEnoughTo(this.movingTarget)) {
+      return
+    }
+
+    this.mode = 'Feeding'
+    delete this.movingTarget
+  }
+
+  /**
+   * @param {Player} subject
+   */
+  validateFeedingState(subject) {
+    if (this.staticTarget === undefined) {
+      return
+    }
+
+    if (! subject.reached(this.staticTarget)) {
+      return
+    }
+
+    delete this.staticTarget
+  }
+
+  /**
+   * @param {Player} subject
+   * @param {Player} rival
+   */
+  updateMovingTarget(subject, rival) {
+    if (rival === subject) {
+      return
+    }
+
+    if (! subject.isCloseEnoughTo(rival)) {
+      return
+    }
+
+    delete this.staticTarget
+    this.movingTarget = rival
+    this.mode = subject.isBiggerThan(rival) ? 'Hunting' : 'Running'
   }
 
   /**
@@ -102,16 +120,16 @@ export class Automation {
    * @param {Player} subject
    */
   updateStaticTarget(blob, subject) {
+    if (this.mode === 'Hunting' || this.mode === 'Running') {
+      return
+    }
+
     if (this.staticTarget === undefined) {
       this.staticTarget = blob
-
-      return
     }
 
-    if (blob.calculateDistance(subject.blob) > this.staticTarget.calculateDistance(subject.blob)) {
-      return
+    if (blob.calculateDistance(subject.blob) < this.staticTarget.calculateDistance(subject.blob)) {
+      this.staticTarget = blob
     }
-
-    this.staticTarget = blob
   }
 }

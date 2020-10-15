@@ -18,7 +18,6 @@ export class Bot extends Player {
    * @returns {void}
    */
   executeMovement() {
-    this.automation.updateTargets(this)
     this.automation.operate(this)
     super.executeMovement()
   }

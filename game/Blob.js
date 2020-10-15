@@ -5,9 +5,10 @@ export class Blob {
    * @param {Vector} position
    * @param {Number} radius
    */
-  constructor(position, radius) {
+  constructor(position, radius, limits) {
     this.position = position
     this.radius = radius
+    this.limits = limits
     this.speed = 2.5
   }
 
@@ -15,7 +16,23 @@ export class Blob {
    * @param {Vector} target
    */
   move(target) {
-    this.position.add(target.withLength(this.speed))
+    const movement = target.withLength(this.speed)
+    const x = this.position.x + movement.x
+    const y = this.position.y + movement.y
+
+    if (x < 0 || x > this.limits.x) {
+      movement.x = 0
+      this.position.add(movement)
+      return
+    }
+
+    if (y < 0 || y > this.limits.y) {
+      movement.y = 0
+      this.position.add(movement)
+      return
+    }
+
+    this.position.add(movement)
   }
 
   /**
@@ -38,7 +55,15 @@ export class Blob {
    * @param {Blob} blob
    * @returns {Vector}
    */
-  calculatePath(blob) {
+  calculatePathTo(blob) {
     return this.position.minus(blob.position)
+  }
+
+  /**
+   * @param {Blob} blob
+   * @returns {Vector}
+   */
+  calculatePathFrom(blob) {
+    return blob.position.plus(this.position)
   }
 }

@@ -27,7 +27,7 @@ export class Spawner {
    * @returns {Player}
    */
   spawnPlayer(world) {
-    const blob = new Blob(this.calculateRandomPosition(world), this.config.player.radius)
+    const blob = new Blob(this.calculateRandomPosition(world), this.config.player.radius, world.dimensions)
     const player = new Player(blob, new Controller())
     world.registerPlayer(player)
 
@@ -38,7 +38,7 @@ export class Spawner {
    * @param {World} world
    */
   spawnBot(world) {
-    const blob = new Blob(this.calculateRandomPosition(world), this.config.bot.radius)
+    const blob = new Blob(this.calculateRandomPosition(world), this.config.bot.radius, world.dimensions)
     const bot = new Bot(blob, new Controller(), new Automation(world))
     world.registerPlayer(bot)
   }

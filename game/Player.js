@@ -61,7 +61,7 @@ export class Player {
       return
     }
 
-    if (! this.isBigger(enemy)) {
+    if (! this.isBiggerThan(enemy)) {
       return
     }
 
@@ -95,7 +95,25 @@ export class Player {
    * @param {Player} enemy
    * @returns {Boolean}
    */
-  isBigger(enemy) {
+  isBiggerThan(enemy) {
     return this.blob.radius > enemy.blob.radius
+  }
+
+  /**
+   * @param {Player} enemy
+   * @returns {Boolean}
+   */
+  isCloseEnoughTo(enemy) {
+    const distance = enemy.blob.calculateDistance(this.blob) - (this.blob.radius + enemy.blob.radius)
+    return (distance < enemy.blob.radius / 2)
+  }
+
+  /**
+   * @param {Player} enemy
+   * @returns {Boolean}
+   */
+  isFarEnoughTo(enemy) {
+    const distance = enemy.blob.calculateDistance(this.blob) - (this.blob.radius + enemy.blob.radius)
+    return (distance > (this.blob.radius + enemy.blob.radius) * 2)
   }
 }
