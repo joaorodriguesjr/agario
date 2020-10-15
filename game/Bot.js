@@ -32,7 +32,7 @@ export class Bot extends Player {
    * @returns {void}
    */
   executeMovement() {
-    this.automation.operate(this)
+    this.automation.executeBehaviour(this)
     super.executeMovement()
   }
 

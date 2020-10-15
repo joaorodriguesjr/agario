@@ -27,7 +27,7 @@ export class Automation {
   /**
    * @param {Bot} subject
    */
-  operate(subject) {
+  executeBehaviour(subject) {
     this.updateTargets(subject)
 
     if (this.behaviour === 'Feeding') subject.advanceTo(this.staticTarget)
