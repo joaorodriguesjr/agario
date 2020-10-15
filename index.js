@@ -9,7 +9,7 @@ window.onload = () => {
   const config = {
     world: { width: 1900, height: 950 },
     spawn: {
-      players: 10, blobs: 100,
+      players: 5, blobs: 100,
       player: { radius: 15 }, bot: { radius: 10 },
       blob: { radius: { min: 0.5, max: 5.5 } }
     },
