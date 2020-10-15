@@ -25,6 +25,32 @@ export class Automation {
 
   /**
    * @param {Bot} subject
+   * @param {Player} rival
+   */
+  checkMovingTarget(subject, rival) {
+    if (this.movingTarget !== rival) {
+      return
+    }
+
+    delete this.movingTarget
+    this.updateMovingTarget(subject, this.world.findNearestPlayer(subject))
+  }
+
+  /**
+   * @param {Bot} subject
+   * @param {Blob} blob
+   */
+  checkStaticTarget(subject, blob) {
+    if (this.staticTarget !== blob) {
+      return
+    }
+
+    delete this.staticTarget
+    this.staticTarget = this.world.findNearestBlob(subject)
+  }
+
+  /**
+   * @param {Bot} subject
    */
   executeBehaviour(subject) {
     this.updateTargets(subject)
@@ -96,10 +122,6 @@ export class Automation {
    */
   updateMovingTarget(subject, rival) {
     this.movingTarget = rival
-
-    if (! subject.isCloseEnoughToHunt(rival) || ! subject.isCloseEnoughToRunFrom(rival)) {
-      return
-    }
 
     if (subject.shouldRunFrom(rival)) {
       this.behaviour = 'Running'

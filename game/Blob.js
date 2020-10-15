@@ -52,7 +52,7 @@ export class Blob {
    * @returns {Number}
    */
   calculateDistanceTo(blob) {
-    return this.calculatePathTo(blob).calculateLength() - (this.radius + blob.radius)
+    return this.calculatePathTo(blob).calculateLength() + (this.radius + blob.radius)
   }
 
   /**

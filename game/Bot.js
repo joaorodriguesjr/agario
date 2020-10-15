@@ -37,11 +37,17 @@ export class Bot extends Player {
   }
 
   /**
-   * @param {Player} enemy
-   * @returns {Boolean}
+   * @param {Player} player
    */
-  isCloseEnoughTo(enemy) {
-    return (this.blob.calculateDistanceTo(enemy.blob) < enemy.blob.radius / 2)
+  onPlayerDelete(player) {
+    this.automation.checkMovingTarget(this, player)
+  }
+
+  /**
+   * @param {Blob} blob
+   */
+  onBlobDelete(blob) {
+    this.automation.checkStaticTarget(this, blob)
   }
 
   /**
@@ -49,7 +55,7 @@ export class Bot extends Player {
    * @returns {Boolean}
    */
   isCloseEnoughToHunt(enemy) {
-    return (this.blob.calculateDistanceTo(enemy.blob) < enemy.blob.radius * 0.5)
+    return (this.blob.calculateDistanceTo(enemy.blob) < (this.blob.radius + enemy.blob.radius) * 1.5)
   }
 
   /**

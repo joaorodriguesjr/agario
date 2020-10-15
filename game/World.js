@@ -1,6 +1,7 @@
 import { Vector } from './Vector.js'
 import { Blob } from './Blob.js'
 import { Player } from './Player.js'
+import { Bot } from './Bot.js'
 import { Spawner } from './Spawner.js'
 
 export class World {
@@ -123,14 +124,30 @@ export class World {
    * @param {Player} player
    */
   removePlayer(player) {
+    /**
+     * @param {Player} rival
+     */
+    const onPlayerDelete = (rival) => {
+      rival.untrack(player)
+      if (rival instanceof Bot) rival.onPlayerDelete(player)
+    }
+
     this.players.delete(player)
-    this.players.forEach(rival => rival.untrack(player))
+    this.players.forEach(onPlayerDelete)
   }
 
   /**
    * @param {Blob} blob
    */
   removeBlob(blob) {
+    /**
+     * @param {Player} player
+     */
+    const onBlobDelete = (player) => {
+      if (player instanceof Bot) player.onBlobDelete(blob)
+    }
+
     this.blobs.delete(blob)
+    this.players.forEach(onBlobDelete)
   }
 }
