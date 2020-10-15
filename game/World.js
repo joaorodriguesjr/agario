@@ -23,6 +23,9 @@ export class World {
     this.players = new Set()
   }
 
+  /**
+   * @returns {Number}
+   */
   get playersCount() {
     return this.players.size
   }
@@ -37,10 +40,62 @@ export class World {
   }
 
   /**
+   * @param {Player} subject
+   * @returns {Player}
+   */
+  findNearestPlayer(subject) {
+    /** @type {Player} **/
+    let nearest
+
+    const find = (player) => {
+      if (player === subject) {
+        return
+      }
+
+      if (nearest === undefined) {
+        nearest = player
+      }
+
+      if (nearest.blob.calculateDistanceTo(subject.blob) < player.blob.calculateDistanceTo(subject.blob)) {
+        return
+      }
+
+      nearest = player
+    }
+
+    this.players.forEach(find)
+    return nearest
+  }
+
+  /**
    * @param {Blob} blob
    */
   registerBlob(blob) {
     this.blobs.add(blob)
+  }
+
+  /**
+   * @param {Player} subject
+   * @returns {Blob}
+   */
+  findNearestBlob(subject) {
+    /** @type {Blob} **/
+    let nearest
+
+    const find = (blob) => {
+      if (nearest === undefined) {
+        nearest = blob
+      }
+
+      if (nearest.calculateDistanceTo(subject.blob) < blob.calculateDistanceTo(subject.blob)) {
+        return
+      }
+
+      nearest = blob
+    }
+
+    this.blobs.forEach(find)
+    return nearest
   }
 
   /**

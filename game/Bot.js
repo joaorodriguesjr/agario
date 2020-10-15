@@ -83,4 +83,9 @@ export class Bot extends Player {
   shouldRunFrom(player) {
     return this.isCloseEnoughToRunFrom(player) && player.isBiggerThan(this)
   }
+
+  isDangerClose(blob, player) {
+    return this.blob.calculateDistanceTo(player.blob) < this.blob.calculateDistanceTo(blob)
+      && player.isBiggerThan(this)
+  }
 }

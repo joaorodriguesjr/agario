@@ -20,15 +20,19 @@ export class Blob {
     const x = this.position.x + movement.x
     const y = this.position.y + movement.y
 
+    if (x < 0 || x > this.limits.x && y < 0 || y > this.limits.y) {
+      return
+    }
+
     if (x < 0 || x > this.limits.x) {
       movement.x = 0
-      this.position.add(movement.dividedBy(2))
+      this.position.add(movement.multipliedBy(1.5))
       return
     }
 
     if (y < 0 || y > this.limits.y) {
       movement.y = 0
-      this.position.add(movement.dividedBy(2))
+      this.position.add(movement.multipliedBy(1.5))
       return
     }
 

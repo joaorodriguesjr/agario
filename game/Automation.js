@@ -21,7 +21,6 @@ export class Automation {
     this.staticTarget
 
     this.behaviour = 'Feeding'
-    this.hunting = 0
   }
 
   /**
@@ -39,12 +38,12 @@ export class Automation {
    * @param {Bot} subject
    */
   updateTargets(subject) {
+    this.staticTarget = this.world.findNearestBlob(subject)
+    this.updateMovingTarget(subject, this.world.findNearestPlayer(subject))
+
     if (this.behaviour === 'Running') this.validateRunningBehaviour(subject)
     if (this.behaviour === 'Hunting') this.validateHuntingBehaviour(subject)
     if (this.behaviour === 'Feeding') this.validateFeedingBehaviour(subject)
-
-    this.world.players.forEach(rival => this.updateMovingTarget(subject, rival))
-    this.world.blobs.forEach(blob => this.updateStaticTarget(blob, subject))
   }
 
   /**
@@ -52,13 +51,10 @@ export class Automation {
    */
   validateHuntingBehaviour(subject) {
     if (this.stillHunting(subject)) {
-      this.hunting++
       return
     }
 
-    this.hunting = 0
     this.behaviour = 'Feeding'
-    delete this.movingTarget
   }
 
   /**
@@ -66,11 +62,8 @@ export class Automation {
    * @return {Boolean}
    */
   stillHunting(subject) {
-    let hunting = true
-
-    // if (subject.isCloseEnoughToHunt(this.movingTarget)) hunting = true
+    let hunting = subject.isCloseEnoughToHunt(this.movingTarget)
     if (subject.reached(this.movingTarget.blob)) hunting = false
-    if (this.hunting > 60) hunting = false
 
     return hunting
   }
@@ -84,22 +77,19 @@ export class Automation {
     }
 
     this.behaviour = 'Feeding'
-    delete this.movingTarget
   }
 
   /**
    * @param {Bot} subject
    */
   validateFeedingBehaviour(subject) {
-    if (this.staticTarget === undefined) {
+    if (this.staticTarget === undefined || this.movingTarget === undefined) {
       return
     }
 
-    if (! subject.reached(this.staticTarget)) {
-      return
+    if (subject.isDangerClose(this.staticTarget, this.movingTarget)) {
+      this.behaviour = 'Running'
     }
-
-    delete this.staticTarget
   }
 
   /**
@@ -107,9 +97,7 @@ export class Automation {
    * @param {Player} rival
    */
   updateMovingTarget(subject, rival) {
-    if (rival === subject) {
-      return
-    }
+    this.movingTarget = rival
 
     if (! subject.isCloseEnoughToHunt(rival) || ! subject.isCloseEnoughToRunFrom(rival)) {
       return
@@ -121,26 +109,6 @@ export class Automation {
 
     if (subject.shouldHunt(rival)) {
       this.behaviour = 'Hunting'
-    }
-
-    this.movingTarget = rival
-  }
-
-  /**
-   * @param {Blob} blob
-   * @param {Bot} subject
-   */
-  updateStaticTarget(blob, subject) {
-    if (this.behaviour === 'Hunting' || this.behaviour === 'Running') {
-      return
-    }
-
-    if (this.staticTarget === undefined) {
-      this.staticTarget = blob
-    }
-
-    if (blob.calculateDistanceTo(subject.blob) < this.staticTarget.calculateDistanceTo(subject.blob)) {
-      this.staticTarget = blob
     }
   }
 }
