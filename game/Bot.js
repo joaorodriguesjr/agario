@@ -40,6 +40,7 @@ export class Bot extends Player {
    * @param {Player} player
    */
   onPlayerDelete(player) {
+    super.onPlayerDelete(player)
     this.automation.checkMovingTarget(this, player)
   }
 
@@ -47,6 +48,7 @@ export class Bot extends Player {
    * @param {Blob} blob
    */
   onBlobDelete(blob) {
+    super.onBlobDelete(blob)
     this.automation.checkStaticTarget(this, blob)
   }
 

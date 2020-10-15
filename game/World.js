@@ -25,6 +25,14 @@ export class World {
   }
 
   /**
+   * @returns {void}
+   */
+  update() {
+    this.spawner.spawnEntities(this)
+    this.players.forEach(player => this.executePlayerMechanics(player))
+  }
+
+  /**
    * @returns {Number}
    */
   get playersCount() {
@@ -100,14 +108,6 @@ export class World {
   }
 
   /**
-   * @returns {void}
-   */
-  update() {
-    this.spawner.spawnEntities(this)
-    this.players.forEach(player => this.executePlayerMechanics(player))
-  }
-
-  /**
    * @param {Player} player
    */
   executePlayerMechanics(player) {
@@ -124,30 +124,15 @@ export class World {
    * @param {Player} player
    */
   removePlayer(player) {
-    /**
-     * @param {Player} rival
-     */
-    const onPlayerDelete = (rival) => {
-      rival.untrack(player)
-      if (rival instanceof Bot) rival.onPlayerDelete(player)
-    }
-
     this.players.delete(player)
-    this.players.forEach(onPlayerDelete)
+    this.players.forEach(rival => rival.onPlayerDelete(player))
   }
 
   /**
    * @param {Blob} blob
    */
   removeBlob(blob) {
-    /**
-     * @param {Player} player
-     */
-    const onBlobDelete = (player) => {
-      if (player instanceof Bot) player.onBlobDelete(blob)
-    }
-
     this.blobs.delete(blob)
-    this.players.forEach(onBlobDelete)
+    this.players.forEach(player => player.onBlobDelete(blob))
   }
 }

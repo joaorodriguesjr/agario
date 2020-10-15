@@ -14,6 +14,18 @@ export class Player {
   }
 
   /**
+   * @param {Player} player
+   */
+  onPlayerDelete(player) {
+    this.untrack(player)
+  }
+
+  /**
+   * @param {Blob} blob
+   */
+  onBlobDelete(blob) { }
+
+  /**
    * @param {Player} enemy
    */
   track(enemy) {
