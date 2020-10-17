@@ -160,15 +160,16 @@ export class World {
 
   initializeScales() {
     this.scales = new Set()
+    const height = this.dimensions.y / 4
 
-    let step = (this.dimensions.y / 25) / 4
+    let step = height / 25
     let iterator = step
     let scale = this.scale = 1
 
-    while (iterator < this.dimensions.y / 4) {
+    while (iterator < height) {
       this.scales.add({ min: iterator, max: iterator + step, value: scale })
       iterator = iterator + step
-      scale = scale - 0.035
+      scale -= (1 / 27.5)
     }
   }
 

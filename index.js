@@ -8,8 +8,8 @@ window.config = {
   world: { width: 7500, height: 5000 },
   spawn: {
     players: 50, blobs: 500,
-    player: { radius: 15 }, bot: { radius: 10 },
-    blob: { radius: { min: 0.5, max: 5.5 } }
+    player: { radius: 25 }, bot: { radius: 10 },
+    blob: { radius: { min: 0.5, max: 12.5 } }
   },
 }
 
