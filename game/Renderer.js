@@ -17,7 +17,7 @@ export class Renderer {
    * @param {Player} player
    * @return {Vector}
    */
-  calculateOffset(player) {
+  calculateOffset(world, player) {
     const x = (this.canvas.width  / 2) - player.blob.position.x
     const y = (this.canvas.height / 2) - player.blob.position.y
 
@@ -37,7 +37,7 @@ export class Renderer {
     this.context.scale(scale, scale)
     this.context.translate(-player.blob.position.x, -player.blob.position.y)
 
-    const offset = this.calculateOffset(player)
+    const offset = this.calculateOffset(world, player)
 
     for (const blob of world.blobs) this.renderBlob(blob, offset)
     for (const player of world.players) this.renderBlob(player.blob, offset)
@@ -50,7 +50,7 @@ export class Renderer {
    */
   renderBlob(blob, offset) {
     if (this.inCullingArea(blob.position.plus(offset))) {
-      return
+      // return
     }
 
     this.context.beginPath()
