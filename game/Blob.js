@@ -50,6 +50,14 @@ export class Blob {
 
   /**
    * @param {Blob} target
+   * @returns {Boolean}
+   */
+  isBiggerThan(target) {
+    return this.radius > target.radius
+  }
+
+  /**
+   * @param {Blob} target
    * @returns {Number}
    */
   calculateDistanceTo(target) {
@@ -70,5 +78,13 @@ export class Blob {
    */
   calculatePathFrom(target) {
     return target.position.plus(this.position)
+  }
+
+  /**
+   * @param {Blob} target
+   * @returns {Boolean}
+   */
+  reached(target) {
+    return (this.calculatePathTo(target).calculateLength() < (this.radius - target.radius / 2))
   }
 }

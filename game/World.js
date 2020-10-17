@@ -45,15 +45,18 @@ export class World {
    */
   update() {
     this.spawner.spawnEntities(this)
-    this.players.forEach(player => this.executePlayerMechanics(player))
+    for (let player of this.players) this.executePlayerMechanics(player)
   }
 
   /**
    * @param {Player} player
    */
   registerPlayer(player) {
-    this.players.forEach(rival => rival.track(player))
-    this.players.forEach(rival => player.track(rival))
+    for (let rival of this.players) {
+      rival.track(player)
+      player.track(rival)
+    }
+
     this.players.add(player)
   }
 
@@ -65,9 +68,9 @@ export class World {
     /** @type {Player} **/
     let nearest
 
-    const finder = (player) => {
+    for (let player of this.players) {
       if (player === subject) {
-        return
+        continue
       }
 
       if (nearest === undefined) {
@@ -75,13 +78,12 @@ export class World {
       }
 
       if (nearest.calculateDistanceTo(subject) < player.calculateDistanceTo(subject)) {
-        return
+        continue
       }
 
       nearest = player
     }
 
-    this.players.forEach(finder)
     return nearest
   }
 
@@ -100,19 +102,18 @@ export class World {
     /** @type {Blob} **/
     let nearest
 
-    const finder = (blob) => {
+    for (let blob of this.blobs) {
       if (nearest === undefined) {
         nearest = blob
       }
 
       if (nearest.calculateDistanceTo(subject) < blob.calculateDistanceTo(subject)) {
-        return
+        continue
       }
 
       nearest = blob
     }
 
-    this.blobs.forEach(finder)
     return nearest
   }
 
@@ -149,7 +150,7 @@ export class World {
    * @param {Player} viewer
    */
   calculateScale(viewer) {
-    for (const scale of this.scales) {
+    for (let scale of this.scales) {
       if (! this.inTheRange(viewer.radius, scale)) {
         continue
       }

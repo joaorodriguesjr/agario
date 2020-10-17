@@ -67,7 +67,7 @@ export class Player extends Blob {
    * @param {Function} onEnemyBeaten
    */
   fightEnemies(onEnemyBeaten) {
-    this.enemies.forEach(enemy => this.fightEnemy(enemy, onEnemyBeaten))
+    for (let enemy of this.enemies) this.fightEnemy(enemy, onEnemyBeaten)
   }
 
   /**
@@ -98,22 +98,5 @@ export class Player extends Blob {
 
     this.grow(blob.radius / 10)
     onBlobEaten(blob)
-  }
-
-  /**
-   * @param {Blob} blob
-   * @returns {Boolean}
-   */
-  reached(blob) {
-    const distance = this.calculatePathTo(blob).calculateLength()
-    return (distance < (this.radius - blob.radius / 2))
-  }
-
-  /**
-   * @param {Player} enemy
-   * @returns {Boolean}
-   */
-  isBiggerThan(enemy) {
-    return this.radius > enemy.radius
   }
 }

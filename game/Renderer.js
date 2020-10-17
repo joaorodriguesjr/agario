@@ -39,8 +39,8 @@ export class Renderer {
 
     const offset = this.calculateOffset(world, player)
 
-    for (const blob of world.blobs) this.renderBlob(blob, offset)
-    for (const player of world.players) this.renderBlob(player, offset)
+    for (let blob of world.blobs) this.renderBlob(blob, offset)
+    for (let player of world.players) this.renderBlob(player, offset)
 
     this.context.restore()
   }
