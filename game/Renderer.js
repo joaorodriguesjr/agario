@@ -10,17 +10,7 @@ export class Renderer {
   constructor(canvas) {
     this.canvas = canvas
     this.context = canvas.getContext('2d')
-  }
-
-  /**
-   * @param {Player} player
-   * @return {Vector}
-   */
-  calculateOffset(player) {
-    const x = (this.canvas.width  / 2) - player.blob.position.x
-    const y = (this.canvas.height / 2) - player.blob.position.y
-
-    return new Vector(x, y)
+    this.context.fillStyle = "#454545";
   }
 
   /**
@@ -28,29 +18,27 @@ export class Renderer {
    * @param {Player} player
    */
   render(world, player) {
+    const scale = world.calculateScale(player)
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    const offset = this.calculateOffset(player)
-    this.context.fillStyle = "#F9F9F9";
-    this.context.fillRect(offset.x, offset.y, world.dimensions.x, world.dimensions.y);
-    this.context.fillStyle = "#454545";
-
-    world.blobs.forEach(blob => this.renderBlob(blob, offset))
-    world.players.forEach(player => this.renderBlob(player.blob, offset))
+    this.context.save()
+    this.context.translate(this.canvas.width / 2, this.canvas.height / 2)
+    this.context.scale(scale, scale)
+    this.context.translate(-player.blob.position.x, -player.blob.position.y)
+    world.blobs.forEach(blob => this.renderBlob(blob))
+    world.players.forEach(player => this.renderBlob(player.blob))
+    this.context.restore()
   }
 
   /**
    * @param {Blob} blob
-   * @param {Vector} offset
    */
-  renderBlob(blob, offset) {
-    const offsetted = blob.position.plus(offset)
-
-    if (this.inCullingArea(offsetted)) {
-      return
+  renderBlob(blob) {
+    if (this.inCullingArea(blob.position)) {
+      // return
     }
 
     this.context.beginPath()
-    this.context.arc(offsetted.x, offsetted.y, blob.radius, 0, 2 * Math.PI)
+    this.context.arc(blob.position.x, blob.position.y, blob.radius, 0, 2 * Math.PI)
     this.context.fill()
   }
 

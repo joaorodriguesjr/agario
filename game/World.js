@@ -22,6 +22,8 @@ export class World {
      * @type {Set<Player>}
      */
     this.players = new Set()
+
+    this.initializeScales()
   }
 
   /**
@@ -141,5 +143,42 @@ export class World {
   removeBlob(blob) {
     this.blobs.delete(blob)
     this.players.forEach(player => player.onBlobRemove(blob))
+  }
+
+  /**
+   * @param {Player} viewer
+   */
+  calculateScale(viewer) {
+    const radius = viewer.blob.radius
+
+    for (const scale of this.scales) {
+      if (radius > scale.min && radius < scale.max) this.scale = this.interpolate(this.scale, scale.value, 0.05)
+    }
+
+    return this.scale
+  }
+
+  initializeScales() {
+    this.scales = new Set()
+
+    let step = (this.dimensions.y / 25) / 4
+    let iterator = step
+    let scale = this.scale = 1
+
+    while (iterator < this.dimensions.y / 4) {
+      this.scales.add({ min: iterator, max: iterator + step, value: scale })
+      iterator = iterator + step
+      scale = scale - 0.035
+    }
+  }
+
+  /**
+   * @param {Number} min
+   * @param {Number} max
+   * @param {Number} step
+   * @return {Number}
+   */
+  interpolate(min, max, step) {
+    return (max - min) * step + min
   }
 }

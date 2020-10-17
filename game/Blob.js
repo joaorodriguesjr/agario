@@ -44,7 +44,7 @@ export class Blob {
    */
   grow(growth) {
     this.radius = this.radius + growth
-    this.speed  = this.speed  - growth / 100
+    this.speed  = this.speed  - growth / 1000
   }
 
   /**
