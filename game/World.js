@@ -149,26 +149,37 @@ export class World {
    * @param {Player} viewer
    */
   calculateScale(viewer) {
-    const radius = viewer.blob.radius
-
     for (const scale of this.scales) {
-      if (radius > scale.min && radius < scale.max) this.scale = this.interpolate(this.scale, scale.value, 0.05)
+      if (! this.inTheRange(viewer.blob.radius, scale)) {
+        continue
+      }
+
+      this.updateScale(scale.value)
     }
 
     return this.scale
   }
 
+  updateScale(value) {
+    this.scale = this.interpolate(this.scale, value, 0.05)
+  }
+
+  inTheRange(radius, scale) {
+    return (radius > scale.min && radius < scale.max)
+  }
+
   initializeScales() {
-    this.scales = new Set()
     const height = this.dimensions.y / 4
 
     let step = height / 25
     let iterator = step
     let scale = this.scale = 1
 
+    this.scales = new Set()
+
     while (iterator < height) {
       this.scales.add({ min: iterator, max: iterator + step, value: scale })
-      iterator = iterator + step
+      iterator += step
       scale -= (1 / 27.5)
     }
   }
