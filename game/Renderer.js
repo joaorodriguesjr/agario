@@ -20,12 +20,15 @@ export class Renderer {
   render(world, player) {
     const scale = world.calculateScale(player)
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
     this.context.save()
     this.context.translate(this.canvas.width / 2, this.canvas.height / 2)
     this.context.scale(scale, scale)
     this.context.translate(-player.blob.position.x, -player.blob.position.y)
-    world.blobs.forEach(blob => this.renderBlob(blob))
-    world.players.forEach(player => this.renderBlob(player.blob))
+
+    for (const blob of world.blobs) this.renderBlob(blob)
+    for (const player of world.players) this.renderBlob(player.blob)
+
     this.context.restore()
   }
 
