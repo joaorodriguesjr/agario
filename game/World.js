@@ -8,22 +8,19 @@ export class World {
    * @param {Spawner} spawner
    */
   constructor(config, spawner) {
-    this.width  = config.world.width
-    this.height = config.world.height
-
     this.spawner = spawner
 
-    /**
-     * @type {Set<Blob>}
-     */
+    /** @type {Number} */
+    this.width  = config.world.width
+
+    /** @type {Number} */
+    this.height = config.world.height
+
+    /** @type {Set<Blob>} */
     this.blobs = new Set()
 
-    /**
-     * @type {Set<Player>}
-     */
+    /** @type {Set<Player>} */
     this.players = new Set()
-
-    this.initializeScales()
   }
 
   /**
@@ -144,54 +141,5 @@ export class World {
   removeBlob(blob) {
     this.blobs.delete(blob)
     this.players.forEach(player => player.onBlobRemove(blob))
-  }
-
-  /**
-   * @param {Player} viewer
-   */
-  calculateScale(viewer) {
-    for (let scale of this.scales) {
-      if (! this.inTheRange(viewer.radius, scale)) {
-        continue
-      }
-
-      this.updateScale(scale.value)
-    }
-
-    return this.scale
-  }
-
-  updateScale(value) {
-    this.scale = this.interpolate(this.scale, value, 0.05)
-  }
-
-  inTheRange(radius, scale) {
-    return (radius > scale.min && radius < scale.max)
-  }
-
-  initializeScales() {
-    const height = this.height / 4
-
-    let step = height / 25
-    let iterator = step
-    let scale = this.scale = 1
-
-    this.scales = new Set()
-
-    while (iterator < height) {
-      this.scales.add({ min: iterator, max: iterator + step, value: scale })
-      iterator += step
-      scale -= (1 / 27.5)
-    }
-  }
-
-  /**
-   * @param {Number} min
-   * @param {Number} max
-   * @param {Number} step
-   * @return {Number}
-   */
-  interpolate(min, max, step) {
-    return (max - min) * step + min
   }
 }

@@ -2,12 +2,15 @@ import { Vector } from './Vector.js'
 import { Blob } from './Blob.js'
 import { World } from './World.js';
 import { Player } from './Player.js';
+import { Scaler } from './Scaler.js';
 
 export class Renderer {
   /**
    * @param {HTMLCanvasElement} canvas
+   * @param {Scaler} scaler
    */
-  constructor(canvas) {
+  constructor(canvas, scaler) {
+    this.scaler = scaler
     this.canvas = canvas
     this.context = canvas.getContext('2d')
     this.context.fillStyle = "#454545";
@@ -29,7 +32,7 @@ export class Renderer {
    * @param {Player} player
    */
   render(world, player) {
-    const scale = world.calculateScale(player)
+    const scale = this.scaler.calculateScale(player, this.canvas)
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     this.context.save()
