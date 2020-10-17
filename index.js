@@ -1,4 +1,3 @@
-import { Vector } from './game/Vector.js'
 import { Renderer } from './game/Renderer.js'
 import { World } from './game/World.js'
 import { Spawner } from './game/Spawner.js'
@@ -8,7 +7,7 @@ window.config = {
   world: { width: 7500, height: 5000 },
   spawn: {
     players: 50, blobs: 500,
-    player: { radius: 25 }, bot: { radius: 10 },
+    player: { radius: 25, speed: 2.5 }, bot: { radius: 10, speed: 2.5 },
     blob: { radius: { min: 0.5, max: 12.5 } }
   },
 }

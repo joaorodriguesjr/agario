@@ -5,12 +5,15 @@ import { Automation } from './Automation.js'
 
 export class Bot extends Player {
   /**
-   * @param {Blob} blob
+   * @param {Vector} position
+   * @param {Vector} velocity
+   * @param {Vector} acceleration
+   * @param {Number} radius
    * @param {Controller} controller
    * @param {Automation} automation
    */
-  constructor(blob, controller, automation) {
-    super(blob, controller)
+  constructor(position, velocity, acceleration, radius, controller, automation) {
+    super(position, velocity, acceleration, radius, controller)
     this.automation = automation
   }
 
@@ -18,22 +21,22 @@ export class Bot extends Player {
    * @param {Blob} target
    */
   advanceTo(target) {
-    this.controller.addMovement(this.blob.calculatePathTo(target))
+    this.controller.addMovement(this.calculatePathTo(target))
   }
 
   /**
    * @param {Blob} target
    */
   retreatFrom(target) {
-    this.controller.addMovement(this.blob.calculatePathFrom(target))
+    this.controller.addMovement(this.calculatePathFrom(target))
   }
 
   /**
    * @returns {void}
    */
-  executeMovement() {
+  executeMovement(world) {
     this.automation.executeAutomatedBehaviour(this)
-    super.executeMovement()
+    super.executeMovement(world)
   }
 
   /**
@@ -57,7 +60,7 @@ export class Bot extends Player {
    * @returns {Boolean}
    */
   isCloseEnoughToHunt(enemy) {
-    return (this.blob.calculateDistanceTo(enemy.blob) < (this.blob.radius + enemy.blob.radius) * 2.00)
+    return (this.calculateDistanceTo(enemy) < (this.radius + enemy.radius) * 2.00)
   }
 
   /**
@@ -65,7 +68,7 @@ export class Bot extends Player {
    * @returns {Boolean}
    */
   isCloseEnoughToRunFrom(enemy) {
-    return (this.blob.calculateDistanceTo(enemy.blob) < (this.blob.radius + enemy.blob.radius) * 1.85)
+    return (this.calculateDistanceTo(enemy) < (this.radius + enemy.radius) * 1.85)
   }
 
   /**
@@ -73,7 +76,7 @@ export class Bot extends Player {
    * @returns {Boolean}
    */
   isFarEnoughToRunFrom(enemy) {
-    return (this.blob.calculateDistanceTo(enemy.blob) > (this.blob.radius + enemy.blob.radius) * 2.50)
+    return (this.calculateDistanceTo(enemy) > (this.radius + enemy.radius) * 2.50)
   }
 
   /**
@@ -93,7 +96,7 @@ export class Bot extends Player {
   }
 
   isDangerClose(blob, player) {
-    return this.blob.calculateDistanceTo(player.blob) < this.blob.calculateDistanceTo(blob) * 1.25
+    return this.calculateDistanceTo(player) < this.calculateDistanceTo(blob) * 1.25
       && player.isBiggerThan(this)
   }
 }

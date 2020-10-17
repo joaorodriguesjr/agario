@@ -2,14 +2,19 @@ import { Blob } from './Blob.js'
 import { Vector } from './Vector.js'
 import { Controller } from './Controller.js'
 
-export class Player {
+export class Player extends Blob {
   /**
-   * @param {Blob} blob
+   * @param {Vector} position
+   * @param {Vector} velocity
+   * @param {Vector} acceleration
+   * @param {Number} radius
    * @param {Controller} controller
    */
-  constructor(blob, controller) {
-    this.blob = blob
+  constructor(position, velocity, acceleration, radius, controller) {
+    super(position, velocity, acceleration, radius)
     this.controller = controller
+
+    /** @type {Set<Player>} */
     this.enemies = new Set()
   }
 
@@ -47,14 +52,15 @@ export class Player {
   }
 
   /**
+   * @param {World} world
    * @returns {void}
    */
-  executeMovement() {
+  executeMovement(world) {
     if (! this.controller.isMoving()) {
       return
     }
 
-    this.blob.move(this.controller.nextMovement())
+    this.move(world, this.controller.nextMovement())
   }
 
   /**
@@ -69,7 +75,7 @@ export class Player {
    * @param {Function} onEnemyBeaten
    */
   fightEnemy(enemy, onEnemyBeaten) {
-    if (! this.reached(enemy.blob)) {
+    if (! this.reached(enemy)) {
       return
     }
 
@@ -77,7 +83,7 @@ export class Player {
       return
     }
 
-    this.blob.grow(enemy.blob.radius / 5)
+    this.grow(enemy.radius / 5)
     onEnemyBeaten(enemy)
   }
 
@@ -90,7 +96,7 @@ export class Player {
       return
     }
 
-    this.blob.grow(blob.radius / 10)
+    this.grow(blob.radius / 10)
     onBlobEaten(blob)
   }
 
@@ -99,8 +105,8 @@ export class Player {
    * @returns {Boolean}
    */
   reached(blob) {
-    const distance = this.blob.calculatePathTo(blob).calculateLength()
-    return (distance < (this.blob.radius - blob.radius / 2))
+    const distance = this.calculatePathTo(blob).calculateLength()
+    return (distance < (this.radius - blob.radius / 2))
   }
 
   /**
@@ -108,6 +114,6 @@ export class Player {
    * @returns {Boolean}
    */
   isBiggerThan(enemy) {
-    return this.blob.radius > enemy.blob.radius
+    return this.radius > enemy.radius
   }
 }

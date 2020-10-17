@@ -18,8 +18,8 @@ export class Renderer {
    * @return {Vector}
    */
   calculateOffset(world, player) {
-    const x = (this.canvas.width  / 2) - player.blob.position.x
-    const y = (this.canvas.height / 2) - player.blob.position.y
+    const x = (this.canvas.width  / 2) - player.position.x
+    const y = (this.canvas.height / 2) - player.position.y
 
     return new Vector(x, y)
   }
@@ -35,12 +35,12 @@ export class Renderer {
     this.context.save()
     this.context.translate(this.canvas.width / 2, this.canvas.height / 2)
     this.context.scale(scale, scale)
-    this.context.translate(-player.blob.position.x, -player.blob.position.y)
+    this.context.translate(-player.position.x, -player.position.y)
 
     const offset = this.calculateOffset(world, player)
 
     for (const blob of world.blobs) this.renderBlob(blob, offset)
-    for (const player of world.players) this.renderBlob(player.blob, offset)
+    for (const player of world.players) this.renderBlob(player, offset)
 
     this.context.restore()
   }

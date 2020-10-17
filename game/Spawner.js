@@ -27,10 +27,11 @@ export class Spawner {
    * @returns {Player}
    */
   spawnPlayer(world) {
-    const position = new Vector(world.dimensions.x / 2, world.dimensions.y / 2)
     // const position = this.calculateRandomPosition(world)
-    const blob = new Blob(position, this.config.player.radius, world.dimensions)
-    const player = new Player(blob, new Controller())
+    const position = new Vector(world.width / 2, world.height / 2)
+    const velocity = new Vector(0, 0)
+    const acceleration = new Vector(this.config.player.speed, this.config.player.speed)
+    const player = new Player(position, velocity, acceleration, this.config.player.radius, new Controller())
     world.registerPlayer(player)
 
     return player
@@ -40,8 +41,10 @@ export class Spawner {
    * @param {World} world
    */
   spawnBot(world) {
-    const blob = new Blob(this.calculateRandomPosition(world), this.config.bot.radius, world.dimensions)
-    const bot = new Bot(blob, new Controller(), new Automation(world))
+    const position = this.calculateRandomPosition(world)
+    const velocity = new Vector(0, 0)
+    const acceleration = new Vector(this.config.bot.speed, this.config.bot.speed)
+    const bot = new Bot(position, velocity, acceleration, this.config.bot.radius, new Controller(), new Automation(world))
     world.registerPlayer(bot)
   }
 
@@ -49,7 +52,11 @@ export class Spawner {
    * @param {World} world
    */
   spawnBlob(world) {
-    const blob = new Blob(this.calculateRandomPosition(world), this.calculateRandomRadius())
+    const position = this.calculateRandomPosition(world)
+    const velocity = new Vector(0, 0)
+    const acceleration = new Vector(0, 0)
+    const radius = this.calculateRandomRadius()
+    const blob = new Blob(position, velocity, acceleration, radius)
     world.registerBlob(blob)
   }
 
@@ -58,8 +65,8 @@ export class Spawner {
    * @returns {Vector}
    */
   calculateRandomPosition(world) {
-    const x = Math.floor(Math.random() * world.dimensions.x)
-    const y = Math.floor(Math.random() * world.dimensions.y)
+    const x = Math.floor(Math.random() * world.width )
+    const y = Math.floor(Math.random() * world.height)
     return new Vector(x, y)
   }
 

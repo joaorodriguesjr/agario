@@ -1,7 +1,5 @@
-import { Vector } from './Vector.js'
 import { Blob } from './Blob.js'
 import { Player } from './Player.js'
-import { Bot } from './Bot.js'
 import { Spawner } from './Spawner.js'
 
 export class World {
@@ -10,8 +8,10 @@ export class World {
    * @param {Spawner} spawner
    */
   constructor(config, spawner) {
+    this.width  = config.world.width
+    this.height = config.world.height
+
     this.spawner = spawner
-    this.dimensions = new Vector(config.world.width, config.world.height)
 
     /**
      * @type {Set<Blob>}
@@ -74,7 +74,7 @@ export class World {
         nearest = player
       }
 
-      if (nearest.blob.calculateDistanceTo(subject.blob) < player.blob.calculateDistanceTo(subject.blob)) {
+      if (nearest.calculateDistanceTo(subject) < player.calculateDistanceTo(subject)) {
         return
       }
 
@@ -105,7 +105,7 @@ export class World {
         nearest = blob
       }
 
-      if (nearest.calculateDistanceTo(subject.blob) < blob.calculateDistanceTo(subject.blob)) {
+      if (nearest.calculateDistanceTo(subject) < blob.calculateDistanceTo(subject)) {
         return
       }
 
@@ -120,7 +120,7 @@ export class World {
    * @param {Player} player
    */
   executePlayerMechanics(player) {
-    player.executeMovement()
+    player.executeMovement(this)
 
     const onBlobEaten = (blob) => this.removeBlob(blob)
     this.blobs.forEach(blob => player.eatBlob(blob, onBlobEaten))
@@ -150,7 +150,7 @@ export class World {
    */
   calculateScale(viewer) {
     for (const scale of this.scales) {
-      if (! this.inTheRange(viewer.blob.radius, scale)) {
+      if (! this.inTheRange(viewer.radius, scale)) {
         continue
       }
 
@@ -169,7 +169,7 @@ export class World {
   }
 
   initializeScales() {
-    const height = this.dimensions.y / 4
+    const height = this.height / 4
 
     let step = height / 25
     let iterator = step

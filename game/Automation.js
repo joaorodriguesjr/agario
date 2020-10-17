@@ -56,8 +56,8 @@ export class Automation {
     this.updateTargets(subject)
 
     if (this.behaviour === 'Feeding') subject.advanceTo(this.staticTarget)
-    if (this.behaviour === 'Running') subject.retreatFrom(this.movingTarget.blob)
-    if (this.behaviour === 'Hunting') subject.advanceTo(this.movingTarget.blob)
+    if (this.behaviour === 'Running') subject.retreatFrom(this.movingTarget)
+    if (this.behaviour === 'Hunting') subject.advanceTo(this.movingTarget)
   }
 
   /**
@@ -89,7 +89,7 @@ export class Automation {
    */
   stillHunting(subject) {
     let hunting = subject.isCloseEnoughToHunt(this.movingTarget)
-    if (subject.reached(this.movingTarget.blob)) hunting = false
+    if (subject.reached(this.movingTarget)) hunting = false
 
     return hunting
   }

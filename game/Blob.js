@@ -3,40 +3,41 @@ import { Vector } from './Vector.js'
 export class Blob {
   /**
    * @param {Vector} position
+   * @param {Vector} velocity
+   * @param {Vector} acceleration
    * @param {Number} radius
    */
-  constructor(position, radius, limits) {
+  constructor(position, velocity, acceleration, radius) {
     this.position = position
+    this.velocity = velocity
+    this.acceleration = acceleration
     this.radius = radius
-    this.limits = limits
-    this.speed = 2.5
   }
 
   /**
+   * @param {World} world
    * @param {Vector} target
    */
-  move(target) {
-    const movement = target.withLength(this.speed)
-    const x = this.position.x + movement.x
-    const y = this.position.y + movement.y
+  move(world, target) {
+    const movement = target.withLength(this.acceleration.calculateLength())
+    const x = this.position.x + movement.x + this.radius
+    const y = this.position.y + movement.y + this.radius
 
-    if (x < 0 || x > this.limits.x && y < 0 || y > this.limits.y) {
+    if (x < 0 || x > world.width && y < 0 || y > world.height) {
       return
     }
 
-    if (x < 0 || x > this.limits.x) {
+    if (x < 0 || x > world.width) {
       movement.x = 0
-      this.position.add(movement.multipliedBy(1.5))
-      return
     }
 
-    if (y < 0 || y > this.limits.y) {
+    if (y < 0 || y > world.height) {
       movement.y = 0
-      this.position.add(movement.multipliedBy(1.5))
-      return
     }
 
-    this.position.add(movement)
+    this.velocity = movement
+    this.position.add(this.velocity)
+    return
   }
 
   /**
@@ -48,26 +49,26 @@ export class Blob {
   }
 
   /**
-   * @param {Blob} blob
+   * @param {Blob} target
    * @returns {Number}
    */
-  calculateDistanceTo(blob) {
-    return this.calculatePathTo(blob).calculateLength() + (this.radius + blob.radius)
+  calculateDistanceTo(target) {
+    return this.calculatePathTo(target).calculateLength() + (this.radius + target.radius)
   }
 
   /**
-   * @param {Blob} blob
+   * @param {Blob} target
    * @returns {Vector}
    */
-  calculatePathTo(blob) {
-    return blob.position.minus(this.position)
+  calculatePathTo(target) {
+    return target.position.minus(this.position)
   }
 
   /**
-   * @param {Blob} blob
+   * @param {Blob} target
    * @returns {Vector}
    */
-  calculatePathFrom(blob) {
-    return blob.position.plus(this.position)
+  calculatePathFrom(target) {
+    return target.position.plus(this.position)
   }
 }
