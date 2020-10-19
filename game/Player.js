@@ -91,12 +91,12 @@ export class Player extends Blob {
    * @param {Blob} blob
    * @param {Function} onBlobEaten
    */
-  eatBlob(blob, onBlobEaten) {
+  eatBlob(blob, key, onBlobEaten) {
     if (! this.reached(blob)) {
       return
     }
 
-    this.grow(blob.radius / 10)
-    onBlobEaten(blob)
+    this.grow(blob.radius / 15)
+    onBlobEaten(blob, key)
   }
 }

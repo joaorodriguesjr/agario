@@ -1,6 +1,8 @@
 import { Blob } from './Blob.js'
 import { Player } from './Player.js'
 import { Spawner } from './Spawner.js'
+import { Quadtree } from './Quadtree.js';
+import { Point } from './Point.js';
 
 export class World {
   /**
@@ -16,11 +18,13 @@ export class World {
     /** @type {Number} */
     this.height = config.world.height
 
-    /** @type {Set<Blob>} */
-    this.blobs = new Set()
+    /** @type {Map<Point, Blob>} */
+    this.blobs = new Map()
 
     /** @type {Set<Player>} */
     this.players = new Set()
+
+    this.tree = new Quadtree(this.width, this.height, config.quadtree.quadrant.capacity)
   }
 
   /**
@@ -43,6 +47,7 @@ export class World {
   update() {
     this.spawner.spawnEntities(this)
     for (let player of this.players) this.executePlayerMechanics(player)
+    this.tree.build(this.blobs.keys())
   }
 
   /**
@@ -88,7 +93,9 @@ export class World {
    * @param {Blob} blob
    */
   registerBlob(blob) {
-    this.blobs.add(blob)
+    const point = new Point(blob.position.x, blob.position.y)
+    this.blobs.set(point, blob)
+    // this.tree.build(this.blobs.keys())
   }
 
   /**
@@ -99,7 +106,7 @@ export class World {
     /** @type {Blob} **/
     let nearest
 
-    for (let blob of this.blobs) {
+    for (let [point, blob] of this.blobs) {
       if (nearest === undefined) {
         nearest = blob
       }
@@ -120,8 +127,8 @@ export class World {
   executePlayerMechanics(player) {
     player.executeMovement(this)
 
-    const onBlobEaten = (blob) => this.removeBlob(blob)
-    this.blobs.forEach(blob => player.eatBlob(blob, onBlobEaten))
+    const onBlobEaten = (blob, key) => this.removeBlob(blob, key)
+    this.blobs.forEach((blob, key) => player.eatBlob(blob, key, onBlobEaten))
 
     const onEnemyBeaten = (enemy) => this.removePlayer(enemy)
     player.fightEnemies(onEnemyBeaten)
@@ -138,8 +145,8 @@ export class World {
   /**
    * @param {Blob} blob
    */
-  removeBlob(blob) {
-    this.blobs.delete(blob)
+  removeBlob(blob, key) {
+    this.blobs.delete(key)
     this.players.forEach(player => player.onBlobRemove(blob))
   }
 }

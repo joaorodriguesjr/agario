@@ -118,6 +118,13 @@ export class Quadrant extends Rectangle {
     context.stroke()
     context.closePath()
 
+    this.points.forEach(point => {
+      context.beginPath()
+      context.rect(point.x - 3, point.y - 3, 6, 6)
+      context.fill()
+      context.closePath()
+    })
+
     if (! this.isSubdivided()) return
 
     this.northEast.debugRender(context)

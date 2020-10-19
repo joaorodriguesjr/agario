@@ -5,11 +5,12 @@ import { Input } from './game/Input.js'
 import { Scaler } from './game/Scaler.js'
 
 window.config = {
-  world: { width: 7500, height: 5000 },
+  world: { width: 5000, height: 5000 },
+  quadtree: { quadrant: { capacity: 5 } },
   spawn: {
-    players: 50, blobs: 500,
+    players: 25, blobs: 500,
     player: { radius: 50, speed: 2.5 }, bot: { radius: 10, speed: 2.5 },
-    blob: { radius: { min: 0.5, max: 12.5 } }
+    blob: { radius: { min: 5.5, max: 12.5 } }
   },
 }
 
