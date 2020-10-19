@@ -47,7 +47,7 @@ export class Vector {
   }
 
   calculateLength() {
-    return Math.sqrt(this.x * this.x + this.y * this.y);
+    return Math.sqrt(this.x * this.x + this.y * this.y)
   }
 
   normalized() {
